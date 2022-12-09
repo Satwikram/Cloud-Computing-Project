@@ -1,3 +1,6 @@
+TURN_LEFT = 0
+TURN_RIGHT = 1
+
 def curve_points(start, end, control, resolution=5):
 	# If curve is a straight line
 	if (start[0] - end[0])*(start[1] - end[1]) == 0:
@@ -18,10 +21,7 @@ def curve_road(start, end, control, resolution=15):
 	points = curve_points(start, end, control, resolution=resolution)
 	return [(points[i-1], points[i]) for i in range(1, len(points))]
 
-TURN_LEFT = 0
-TURN_RIGHT = 1
 def turn_road(start, end, turn_direction, resolution=15):
-	# Get control point
 	x = min(start[0], end[0])
 	y = min(start[1], end[1])
 
