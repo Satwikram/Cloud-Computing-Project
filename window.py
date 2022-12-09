@@ -4,18 +4,16 @@ import numpy as np
 
 class Window:
     def __init__(self, sim, config={}):
-        # Simulation to draw
+       
         self.sim = sim
 
-        # Set default configurations
         self.set_default_config()
 
-        # Update configurations
         for attr, val in config.items():
             setattr(self, attr, val)
         
     def set_default_config(self):
-        """Set default configuration"""
+
         self.width = 1400
         self.height = 900
         self.bg_color = (250, 250, 250)
@@ -29,54 +27,40 @@ class Window:
 
 
     def loop(self, loop=None):
-        """Shows a window visualizing the simulation and runs the loop function."""
-        
-        # Create a pygame window
+
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.flip()
 
-        # Fixed fps
         clock = pygame.time.Clock()
 
-        # To draw text
         pygame.font.init()
         self.text_font = pygame.font.SysFont('Lucida Console', 16)
 
-        # Draw loop
         running = True
         while running:
-            # Update simulation
+
             if loop: loop(self.sim)
 
-            # Draw simulation
             self.draw()
 
-            # Update window
             pygame.display.update()
             clock.tick(self.fps)
 
-            # Handle all events
             for event in pygame.event.get():
-                # Quit program if window is closed
                 if event.type == pygame.QUIT:
                     running = False
-                # Handle mouse events
+                
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # If mouse button down
                     if event.button == 1:
-                        # Left click
                         x, y = pygame.mouse.get_pos()
                         x0, y0 = self.offset
                         self.mouse_last = (x-x0*self.zoom, y-y0*self.zoom)
                         self.mouse_down = True
                     if event.button == 4:
-                        # Mouse wheel up
                         self.zoom *=  (self.zoom**2+self.zoom/4+1) / (self.zoom**2+1)
                     if event.button == 5:
-                        # Mouse wheel down 
                         self.zoom *= (self.zoom**2+1) / (self.zoom**2+self.zoom/4+1)
                 elif event.type == pygame.MOUSEMOTION:
-                    # Drag content
                     if self.mouse_down:
                         x1, y1 = self.mouse_last
                         x2, y2 = pygame.mouse.get_pos()
@@ -85,13 +69,13 @@ class Window:
                     self.mouse_down = False           
 
     def run(self, steps_per_update=1):
-        """Runs the simulation by updating in every loop."""
+
         def loop(sim):
             sim.run(steps_per_update)
         self.loop(loop)
 
     def convert(self, x, y=None):
-        """Converts simulation coordinates to screen coordinates"""
+
         if isinstance(x, list):
             return [self.convert(e[0], e[1]) for e in x]
         if isinstance(x, tuple):
@@ -102,7 +86,7 @@ class Window:
         )
 
     def inverse_convert(self, x, y=None):
-        """Converts screen coordinates to simulation coordinates"""
+      
         if isinstance(x, list):
             return [self.convert(e[0], e[1]) for e in x]
         if isinstance(x, tuple):
@@ -112,13 +96,11 @@ class Window:
             int(-self.offset[1] + (y - self.height/2)/self.zoom)
         )
 
-
     def background(self, r, g, b):
-        """Fills screen with one color."""
         self.screen.fill((r, g, b))
 
     def line(self, start_pos, end_pos, color):
-        """Draws a line."""
+
         gfxdraw.line(
             self.screen,
             *start_pos,
@@ -127,11 +109,9 @@ class Window:
         )
 
     def rect(self, pos, size, color):
-        """Draws a rectangle."""
         gfxdraw.rectangle(self.screen, (*pos, *size), color)
 
     def box(self, pos, size, color):
-        """Draws a rectangle."""
         gfxdraw.box(self.screen, (*pos, *size), color)
 
     def circle(self, pos, radius, color, filled=True):
@@ -147,7 +127,7 @@ class Window:
             gfxdraw.filled_polygon(self.screen, vertices, color)
 
     def rotated_box(self, pos, size, angle=None, cos=None, sin=None, centered=True, color=(0, 0, 255), filled=True):
-        """Draws a rectangle center at *pos* with size *size* rotated anti-clockwise by *angle*."""
+        
         x, y = pos
         l, h = size
 
@@ -243,17 +223,7 @@ class Window:
                 color=(180, 180, 220),
                 centered=False
             )
-            # Draw road lines
-            # self.rotated_box(
-            #     road.start,
-            #     (road.length, 0.25),
-            #     cos=road.angle_cos,
-            #     sin=road.angle_sin,
-            #     color=(0, 0, 0),
-            #     centered=False
-            # )
 
-            # Draw road arrow
             if road.length > 5: 
                 for i in np.arange(-0.5*road.length, 0.5*road.length, 10):
                     pos = (
@@ -268,9 +238,6 @@ class Window:
                         sin=road.angle_sin
                     )   
             
-
-
-            # TODO: Draw road arrow
 
     def draw_vehicle(self, vehicle, road):
         l, h = vehicle.l,  2
@@ -312,18 +279,12 @@ class Window:
 
 
     def draw(self):
-        # Fill background
+    
         self.background(*self.bg_color)
-
-        # Major and minor grid and axes
-        # self.draw_grid(10, (220,220,220))
-        # self.draw_grid(100, (200,200,200))
-        # self.draw_axes()
 
         self.draw_roads()
         self.draw_vehicles()
         self.draw_signals()
 
-        # Draw status info
         self.draw_status()
         

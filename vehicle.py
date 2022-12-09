@@ -2,14 +2,12 @@ import numpy as np
 
 class Vehicle:
     def __init__(self, config={}):
-        # Set default configuration
         self.set_default_config()
 
         # Update configuration
         for attr, val in config.items():
             setattr(self, attr, val)
 
-        # Calculate properties
         self.init_properties()
 
     def set_default_config(self):    
@@ -33,7 +31,6 @@ class Vehicle:
         self._v_max = self.v_max
 
     def update(self, lead, dt):
-        # Update position and velocity
         if self.v + self.a*dt < 0:
             self.x -= 1/2*self.v*self.v/self.a
             self.v = 0
@@ -41,7 +38,6 @@ class Vehicle:
             self.v += self.a*dt
             self.x += self.v*dt + self.a*dt*dt/2
         
-        # Update acceleration
         alpha = 0
         if lead:
             delta_x = lead.x - self.x - lead.l
