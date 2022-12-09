@@ -1,12 +1,10 @@
 from simulation import Simulation
-# from trafficSimulator import *
+
 from window import Window
 
 
-# Create simulation
 sim = Simulation()
 
-# Add multiple roads
 sim.create_roads([
     ((300, 98), (0, 98)),
     ((0, 102), (300, 102)),
@@ -32,8 +30,6 @@ sim.create_gen({
     ]
 })
 
-# Start simulation
 win = Window(sim)
 win.offset = (-150, -110)
 win.run(steps_per_update=5)
-Footer
