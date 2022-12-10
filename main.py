@@ -1,5 +1,4 @@
 from simulation import Simulation
-# from trafficSimulator import *
 from window import Window
 
 sim = Simulation()
